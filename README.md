@@ -7,7 +7,7 @@ Java (Android), Volley( for http requests). Persanally written XML files parser 
 # Pros
 It works.
 
-It was tested on real group of people(5 persons).
+It was tested on group of real people(5 persons).
 
 # Cons
 CRUTCHES.

@@ -1,5 +1,6 @@
 package com.example.learnremote;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,11 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TestPageFragment extends Fragment {
-    private int questionNumber;
-    private Question question;
-    private String testTheme;
+    private final int questionNumber;
+    private final Question question;
+    private final String testTheme;
     private int partNumber;
     private boolean taskPressedStatus;
     private final String taskText="Task";
@@ -30,8 +32,7 @@ public class TestPageFragment extends Fragment {
     private SharedPreferences testResultPref;
     public static TestPageFragment newInstance(Question outerQuestion,String theme, int pageNumber)
     {
-        TestPageFragment fragment = new TestPageFragment(outerQuestion,theme,pageNumber);
-        return fragment;
+        return new TestPageFragment(outerQuestion,theme,pageNumber);
     }
     public TestPageFragment(Question question,String theme, int pageNumber){
         this.question =  question;
@@ -42,29 +43,18 @@ public class TestPageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        /*XmlParser parser = new XmlParser();
-        XmlPullParser xpp = getResources().getXml(R.xml.modal);
-        parser.parse(xpp);
-        xpp = getResources().getXml(R.xml.kosvennaya);
-        parser.parse(xpp);
-        xpp = getResources().getXml(R.xml.naklonenia);
-        parser.parse(xpp);
-        xpp = getResources().getXml(R.xml.soglasovanie);
-        parser.parse(xpp);
-        xpp = getResources().getXml(R.xml.zalog);
-        parser.parse(xpp);
-        tests.addAll(parser.getTests());*/
     }
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         taskPressedStatus=false;
         final View result=inflater.inflate(R.layout.page_fragment, container, false);
         times_pressed=0;
-        Button finishButton = (Button) result.findViewById(R.id.finishButton);
-        TextView textQuestion=(TextView)result.findViewById(R.id.textQuestion);
-        final TextView textTask = (TextView)result.findViewById(R.id.textTaskTest);
-        TextView numberPage = (TextView)result.findViewById(R.id.pageNumberTest);
+        Button finishButton = result.findViewById(R.id.finishButton);
+        TextView textQuestion= result.findViewById(R.id.textQuestion);
+        final TextView textTask = result.findViewById(R.id.textTaskTest);
+        TextView numberPage = result.findViewById(R.id.pageNumberTest);
         textTask.setText(taskText);
         if(question.getNumber()==questionNumber)
         {
@@ -85,7 +75,7 @@ public class TestPageFragment extends Fragment {
                         intent.putExtra("outOf",questionNumber);
                         result.getContext().startActivity(intent);
                         testResultPref.edit().clear().apply();
-                        getActivity().finish();
+                        Objects.requireNonNull(getActivity()).finish();
                     }
                 }
             });
@@ -95,7 +85,7 @@ public class TestPageFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                if(taskPressedStatus==false)
+                if(!taskPressedStatus)
                 {
                     textTask.setText(testTheme);
                     taskPressedStatus=true;
@@ -108,7 +98,7 @@ public class TestPageFragment extends Fragment {
             }
         };
         textTask.setOnClickListener(onTaskClcik);
-        RecyclerView recyclerViewButton = (RecyclerView)result.findViewById(R.id.answerRecycler);
+        RecyclerView recyclerViewButton = result.findViewById(R.id.answerRecycler);
         textQuestion.setText(question.getText());
         numberPage.setText(question.getNumber()+"/"+questionNumber);
         try {

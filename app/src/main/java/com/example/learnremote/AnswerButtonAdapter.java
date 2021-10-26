@@ -65,9 +65,8 @@ public class AnswerButtonAdapter extends RecyclerView.Adapter<AnswerButtonAdapte
         ViewHolder(View view){
             super(view);
 
-            answerVariant = (TextView) view.findViewById(R.id.answerVariant);
+            answerVariant = view.findViewById(R.id.answerVariant);
             view.setOnClickListener(this);
-            //answerVariant.setOnClickListener(this);
         }
 
         @Override

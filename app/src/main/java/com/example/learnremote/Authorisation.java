@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Authorisation extends AppCompatActivity {
     private RequestQueue requestQueue;
@@ -38,7 +39,7 @@ public class Authorisation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Map<String, String> data= new HashMap<String, String>();
+        Map<String, String> data= new HashMap<>();
         int counter=0;
         auto_auth = getSharedPreferences("log", MODE_PRIVATE);
         if(auto_auth.contains("log")) {
@@ -71,10 +72,10 @@ public class Authorisation extends AppCompatActivity {
         Intent intent = new Intent(this, Authorisation.class);
         startActivity(intent);
     }
-    public void debugClick(View view) throws JSONException {
-        login = (EditText) findViewById(R.id.login_field);
-        pass = (EditText) findViewById(R.id.password_field);
-        Map<String, String> data= new HashMap<String, String>();
+    public void debugClick(View view) {
+        login = findViewById(R.id.login_field);
+        pass = findViewById(R.id.password_field);
+        Map<String, String> data= new HashMap<>();
         data.put("username",login.getText().toString());
         data.put("password",pass.getText().toString());
         JSONObject json = new JSONObject(data);
@@ -99,8 +100,7 @@ public class Authorisation extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
                 Toast.makeText(getApplicationContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
-                Log.d("json",error.getMessage());
-                //Log.v("VOLLEY", error.toString());
+                Log.d("json", Objects.requireNonNull(error.getMessage()));
             }
         });
         requestQueue.add(jsonRequest);
@@ -118,7 +118,7 @@ public class Authorisation extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),response.getString("message"),Toast.LENGTH_LONG).show();
                     if(response.getString("message").equals("Welcome"))
                     {
-                        Map<String, String> forlectures= new HashMap<String, String>();
+                        Map<String, String> forlectures= new HashMap<>();
                         forlectures.put("user_id",response.getString("user_id"));
                         JSONObject jsonForLectures = new JSONObject(forlectures);
 
@@ -158,7 +158,6 @@ public class Authorisation extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
 
-                //Log.v("VOLLEY", error.toString());
             }
         });
         requestQueue.add(jsonRequest);

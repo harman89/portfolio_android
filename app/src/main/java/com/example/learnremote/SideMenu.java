@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SideMenu extends AppCompatActivity {
 
@@ -77,17 +78,16 @@ public class SideMenu extends AppCompatActivity {
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_lections, R.id.nav_tasks, R.id.nav_notifications,R.id.nav_translate)
                 .setDrawerLayout(drawer)
                 .build();
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
         navHeaderView= navigationView.getHeaderView(0);
-        nameSurname = (TextView)navHeaderView.findViewById(R.id.nameSurname);
-        groupName = (TextView)navHeaderView.findViewById(R.id.groupName);
+        nameSurname = navHeaderView.findViewById(R.id.nameSurname);
+        groupName = navHeaderView.findViewById(R.id.groupName);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         try {
@@ -122,7 +122,7 @@ public class SideMenu extends AppCompatActivity {
     }
     public void getContentFromServer(String user_id) throws JSONException {
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-        Map<String, String> data= new HashMap<String, String>();
+        Map<String, String> data= new HashMap<>();
         test_Settings = getSharedPreferences(APP_PREFERENCES_TEST,MODE_PRIVATE);
         if(test_Settings.contains(APP_PREFERENCES_TEST))
         {
@@ -155,7 +155,6 @@ public class SideMenu extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
 
-                //Log.v("VOLLEY", error.toString());
             }
         });
         requestQueue.add(jsonRequest);
@@ -184,8 +183,7 @@ public class SideMenu extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
                 Toast.makeText(getApplicationContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
-                Log.d("json",error.getMessage());
-                //Log.v("VOLLEY", error.toString());
+                Log.d("json", Objects.requireNonNull(error.getMessage()));
             }
         });
         requestQueue.add(stringRequest);
@@ -196,19 +194,18 @@ public class SideMenu extends AppCompatActivity {
         testString = test_Settings.getString(APP_PREFERENCES_TEST,"");
         array = testString.split(",");
         DownloadManager downloadmanager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-        for(int i = 0; i<array.length;i++)
-        {
-            final File file = new File(getExternalFilesDir(null),array[i]+".xml");
-            if (file.exists())
-            {
+        for (String s : array) {
+            final File file = new File(getExternalFilesDir(null), s + ".xml");
+            if (file.exists()) {
                 file.delete();
             }
-            Uri uri = Uri.parse(getResources().getString(R.string.url)+"/get_test" + array[i]);
+            Uri uri = Uri.parse(getResources().getString(R.string.url) + "/get_test" + s);
             DownloadManager.Request request = new DownloadManager.Request(uri);
-            request.setTitle(array[i]+".xml");
+            request.setTitle(s + ".xml");
             request.setDescription("Downloading");
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-            request.setDestinationInExternalFilesDir(this.getApplicationContext(), null, array[i]+".xml");
+            request.setDestinationInExternalFilesDir(this.getApplicationContext(), null, s + ".xml");
+            assert downloadmanager != null;
             downloadmanager.enqueue(request);
         }
     }

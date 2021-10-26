@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class NotificationFragment extends Fragment {
 
@@ -49,7 +50,7 @@ public class NotificationFragment extends Fragment {
         notificationViewModel =
                 new ViewModelProvider(this).get(NotificationViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        SharedPreferences userpref = getActivity().getSharedPreferences("user_id", Context.MODE_PRIVATE);
+        SharedPreferences userpref = Objects.requireNonNull(getActivity()).getSharedPreferences("user_id", Context.MODE_PRIVATE);
         int user_id = userpref.getInt("user_id",0);
         Map<String,String> fornotifications = new HashMap<String, String>();
         fornotifications.put("user_id",user_id+"");
@@ -73,7 +74,7 @@ public class NotificationFragment extends Fragment {
         String URL=getResources().getString(R.string.url)+"/get_notifications";
         String id = data.getString("user_id");
         Log.d("jsonNahui",id);
-        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue = Volley.newRequestQueue(requireContext());
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(id);
         Log.d("jsonNahui",jsonArray.toString());
@@ -96,8 +97,7 @@ public class NotificationFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
 
                 Toast.makeText(getContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
-                Log.d("jsonError",error.getMessage());
-                //Log.v("VOLLEY", error.toString());
+                Log.d("jsonError", Objects.requireNonNull(error.getMessage()));
             }
         });
         requestQueue.add(jsonRequest);

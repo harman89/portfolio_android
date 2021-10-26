@@ -35,20 +35,20 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        name = (EditText)findViewById(R.id.Name);
-        surname = (EditText)findViewById(R.id.Surname);
-        mail = (EditText)findViewById(R.id.mail);
-        username = (EditText)findViewById(R.id.login);
-        password = (EditText)findViewById(R.id.pass);
-        confirm = (EditText)findViewById(R.id.passConfirm);
-        code = (EditText)findViewById(R.id.code);
-        btn_submit = (Button) findViewById(R.id.submitRegister);
+        name = findViewById(R.id.Name);
+        surname = findViewById(R.id.Surname);
+        mail = findViewById(R.id.mail);
+        username = findViewById(R.id.login);
+        password = findViewById(R.id.pass);
+        confirm = findViewById(R.id.passConfirm);
+        code = findViewById(R.id.code);
+        btn_submit = findViewById(R.id.submitRegister);
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(password.getText().toString().equals(confirm.getText().toString())) {
-                    Map<String, String> data= new HashMap<String, String>();
+                    Map<String, String> data= new HashMap<>();
                     data.put("username",username.getText().toString());
                     data.put("name",name.getText().toString());
                     data.put("surname",surname.getText().toString());
@@ -67,11 +67,10 @@ public class Register extends AppCompatActivity {
 
     private void Submit(JSONObject data)
     {
-        final JSONObject savedata= data;
 
         String URL=getResources().getString(R.string.url)+"/registration_student";
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, URL,savedata, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, URL, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -87,7 +86,6 @@ public class Register extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), error.getMessage()+" not responded", Toast.LENGTH_SHORT).show();
 
-                //Log.v("VOLLEY", error.toString());
             }
         });
         requestQueue.add(jsonRequest);
